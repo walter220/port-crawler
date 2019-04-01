@@ -22,3 +22,12 @@ This will start a watch server with `react-scripts`.
 Everytime you save your changes, 
 it will automatically be visible in the browser.
 
+### Build
+- Run `$ npm run build`
+
+This will add a directory called `build`.
+Use this folder on your web server.
+
+
+### Other
+The folder 'old_server' contains files to test this crawler with.
