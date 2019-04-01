@@ -93,7 +93,7 @@ class App extends PureComponent {
               onChange={this.handleUrl}
             />
             <small className="ml-2">
-              <i>When changing the url, don't add : on the end ;)</i>
+              <i>When changing the url, do not add : on the end ;)</i>
             </small>
           </div>
         </div>
