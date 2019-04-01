@@ -1,5 +1,6 @@
 {
   "name": "tv-app",
+  "author": "Walter Jansen",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

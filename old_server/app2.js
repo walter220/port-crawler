@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3010;
+const port = 3015;
 
 app.use(function(req, res, next) {
   console.log('fired');
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
