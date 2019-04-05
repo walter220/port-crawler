@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
+import XHRPortScanner from './xhr';
+import IframeScanner from './Iframe';
 
 class App extends PureComponent {
     constructor(props) {
@@ -9,6 +10,7 @@ class App extends PureComponent {
             url: 'http://localhost',
             startPort: 3001,
             endPort: 3012,
+            method: 'XHR',
             ports: [],
             logs: [],
             isScanningFinished: false,
@@ -34,84 +36,22 @@ class App extends PureComponent {
         this.setState({ endPort: port });
     };
 
-    onClick = () => {
-        this.setState(
-            {
-                logs: [],
-                ports: [],
-                isScanningFinished: false,
-            },
-            () => this._handlePortSearch(),
-        );
-    };
-
-    _handlePortSearch = () => {
-        const { url, startPort, endPort } = this.state;
-
-        for (let i = startPort; i <= endPort; i++) {
-            axios
-                .get(`${url}:${i}`)
-                .then(() => {
-                    const { ports } = this.state;
-                    const newPorts = [
-                        ...ports,
-                        {
-                            portNumber: i,
-                        },
-                    ];
-                    this.setState(
-                        {
-                            ports: newPorts,
-                        },
-                        this._handleLog(i, 'OK'),
-                    );
-                })
-                .catch(() => {
-                    this._handleLog(i, 'ERR');
-                })
-                .finally(() => {
-                    if (i >= endPort) {
-                        this.setState({
-                            isScanningFinished: true,
-                        });
-                    }
-                });
-        }
-    };
-
-    _handleLog = (port, result) => {
-        const { logs } = this.state;
-        let newLogs = [
-            ...logs,
-            {
-                port,
-                result,
-            },
-        ];
-        newLogs = newLogs.sort((a, b) =>
-            a.port > b.port ? 1 : b.port > a.port ? -1 : 0,
-        );
-        this.setState({ logs: newLogs });
+    handleMethod = (method) => {
+        this.setState({ method });
     };
 
     render() {
-        const {
-            url,
-            startPort,
-            endPort,
-            ports,
-            logs,
-            isScanningFinished,
-        } = this.state;
+        const { url, startPort, endPort, method } = this.state;
 
         return (
             <>
-                <div className="row mb-3 form-group align-items-center">
-                    <label htmlFor="start" className="col-md-2">
-                        Url:
-                    </label>
+                <div className="row mb-3 form-group">
+                    <div className="col-12">
+                        <h2>Settings</h2>
+                    </div>
 
-                    <div className="col-md-7">
+                    <div className="col-sm-6 col-md-4">
+                        <label htmlFor="start">Url:</label>
                         <input
                             type="text"
                             name="url"
@@ -119,21 +59,13 @@ class App extends PureComponent {
                             value={url}
                             onChange={this.handleUrl}
                         />
-                        <small className="ml-2">
-                            <i>
-                                When changing the url, do not add : on the end
-                                ;)
-                            </i>
+                        <small className="pl-2">
+                            <i>Do not add : on the end ;)</i>
                         </small>
                     </div>
-                </div>
 
-                <div className="row mb-3 form-group align-items-center">
-                    <label htmlFor="start" className="col-md-2 mb-md-0">
-                        Start port:
-                    </label>
-
-                    <div className="col-md-2">
+                    <div className="col-sm-3 col-md-2">
+                        <label htmlFor="start">Start port:</label>
                         <input
                             type="number"
                             name="start"
@@ -143,12 +75,8 @@ class App extends PureComponent {
                         />
                     </div>
 
-                    <label
-                        htmlFor="end"
-                        className="col-md-2 offset-md-1 mt-2 mt-md-0 mb-md-0">
-                        End port:
-                    </label>
-                    <div className="col-md-2">
+                    <div className="col-sm-3 col-md-2">
+                        <label htmlFor="end">End port:</label>
                         <input
                             type="number"
                             name="end"
@@ -157,66 +85,43 @@ class App extends PureComponent {
                             onChange={this.handleEnd}
                         />
                     </div>
-                </div>
 
-                <div className="row form-group">
-                    <div className="col-12">
-                        <button className="btn btn-dark" onClick={this.onClick}>
-                            Start scanning
-                        </button>
+                    <div className="col-sm-12 col-md-4">
+                        <label>Select method:</label>
+                        <ul className="nav nav-pills">
+                            <li className="nav-item mr-4">
+                                <button
+                                    className={`nav-link 
+                                        ${method === 'XHR' && 'active'}
+                                    `}
+                                    onClick={() => this.handleMethod('XHR')}>
+                                    XHR
+                                </button>
+                            </li>
+                            <li className="nav-item">
+                                <button
+                                    className={`nav-link 
+                                        ${method === 'Iframe' && 'active'}
+                                    `}
+                                    onClick={() => this.handleMethod('Iframe')}>
+                                    Iframe
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
                 <hr />
 
-                <div className="row">
-                    <div className="col-12 col-sm-6">
-                        <h2>Results</h2>
+                {method === 'XHR' && (
+                    <XHRPortScanner
+                        url={url}
+                        startPort={startPort}
+                        endPort={endPort}
+                    />
+                )}
 
-                        <ul>
-                            {ports.map(({ portNumber }) => (
-                                <li key={portNumber}>{portNumber}</li>
-                            ))}
-                        </ul>
-
-                        {isScanningFinished &&
-                            (ports.length === 0 ? (
-                                <div className="alert alert-dark" role="alert">
-                                    Nothing found :(
-                                </div>
-                            ) : (
-                                <div
-                                    className="alert alert-success"
-                                    role="alert">
-                                    Done, found {ports.length} port
-                                    {ports.length > 1 && 's'}.
-                                </div>
-                            ))}
-                    </div>
-                    <div className="col-12 col-sm-6">
-                        <h2>Logs</h2>
-                        <table>
-                            <thead>
-                                <th>
-                                    <td>Port</td>
-                                    <td>Result</td>
-                                </th>
-                            </thead>
-                            <tbody>
-                                {logs.map(({ port, result }) => (
-                                    <tr key={port}>
-                                        <td>
-                                            <pre>{port}</pre>
-                                        </td>
-                                        <td>
-                                            <pre>{result}</pre>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {method === 'Iframe' && <IframeScanner />}
             </>
         );
     }
