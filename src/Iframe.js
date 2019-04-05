@@ -27,7 +27,7 @@ class Iframe extends PureComponent {
             <>
                 <div className="row mb-4">
                     <div className="col-sm-6">
-                        <h3>XHR Port Scanner</h3>
+                        <h3>Iframe Port Scanner</h3>
                     </div>
                     <div className="col-sm-6 d-flex justify-content-end">
                         <button className="btn btn-dark" onClick={this.onClick}>
