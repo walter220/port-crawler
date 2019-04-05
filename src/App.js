@@ -14,6 +14,7 @@ class App extends PureComponent {
             ports: [],
             logs: [],
             isScanningFinished: false,
+            warning: '',
         };
     }
 
@@ -25,15 +26,19 @@ class App extends PureComponent {
     handleStart = (e) => {
         const port = e.target.value;
         const { endPort } = this.state;
-        if (port >= endPort) return;
-        this.setState({ startPort: port });
+        let warning = '';
+        if (port >= endPort)
+            warning = 'Port is higher than endport, this can cause issues';
+        this.setState({ startPort: port, warning });
     };
 
     handleEnd = (e) => {
         const port = e.target.value;
         const { startPort } = this.state;
-        if (port <= startPort) return;
-        this.setState({ endPort: port });
+        let warning = '';
+        if (port <= startPort)
+            warning = 'Port is lower than startport, this can cause issues';
+        this.setState({ endPort: port, warning });
     };
 
     handleMethod = (method) => {
@@ -41,7 +46,7 @@ class App extends PureComponent {
     };
 
     render() {
-        const { url, startPort, endPort, method } = this.state;
+        const { url, startPort, endPort, method, warning } = this.state;
 
         return (
             <>
@@ -109,6 +114,13 @@ class App extends PureComponent {
                             </li>
                         </ul>
                     </div>
+                    {warning && (
+                        <div className="col-12">
+                            <div class="alert alert-danger" role="alert">
+                                {warning}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <hr />
