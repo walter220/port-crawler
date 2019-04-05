@@ -8,9 +8,9 @@ class App extends PureComponent {
 
         this.state = {
             url: 'http://localhost',
-            startPort: 3001,
-            endPort: 3012,
-            method: 'XHR',
+            startPort: 2999,
+            endPort: 3003,
+            method: 'Iframe',
             ports: [],
             logs: [],
             isScanningFinished: false,
@@ -121,7 +121,13 @@ class App extends PureComponent {
                     />
                 )}
 
-                {method === 'Iframe' && <IframeScanner />}
+                {method === 'Iframe' && (
+                    <IframeScanner
+                        url={url}
+                        startPort={startPort}
+                        endPort={endPort}
+                    />
+                )}
             </>
         );
     }
