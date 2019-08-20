@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Crawler from './Crawler';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<Crawler />, document.getElementById('app'));

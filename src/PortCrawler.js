@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import XHRPortScanner from './xhr';
+import XHRPortScanner from './XHRPortScanner';
 import IframeScanner from './Iframe';
 
-class App extends PureComponent {
+class PortCrawler extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -52,7 +52,7 @@ class App extends PureComponent {
             <>
                 <div className="row mb-3 form-group">
                     <div className="col-12">
-                        <h2>Settings</h2>
+                        <h2>Port crawler - Settings</h2>
                     </div>
 
                     <div className="col-sm-6 col-md-4">
@@ -145,4 +145,4 @@ class App extends PureComponent {
     }
 }
 
-export default App;
+export default PortCrawler;
