@@ -31,3 +31,20 @@ Use this folder on your web server.
 
 ### Other
 The folder 'old_server' contains files to test this crawler with.
+
+
+### Screenshots
+
+#### Port crawler XHR
+![alt text][port-xhr]
+
+#### Port crawler iFrame
+![alt text][port-iframe]
+
+#### Host crawler XHR
+![alt text][host-xhr]
+
+
+[port-xhr]: docs/port-crawler-xhr-screenshot.png "Port XHR"
+[port-iframe]: docs/port-crawler-iframe-screenshot.png "Port Iframe"
+[host-xhr]: docs/host-crawler-xhr-screenshot.png "Host XHR"

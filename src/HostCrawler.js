@@ -59,7 +59,7 @@ class HostCrawler extends PureComponent {
                 <div className="row mb-3 form-group">
                     <div className="col-sm-6">
                         <h5>Hosts</h5>
-                        <ul className="list-group">
+                        <ul className="list-group mb-4">
                             {hosts.map((host) => (
                                 <li
                                     key={host}
@@ -118,7 +118,12 @@ class HostCrawler extends PureComponent {
                                 onChange={this.handlePathChange}
                             />
                         </div>
-                        <pre>{protocol + hosts[0] + ':' + port + path}</pre>
+                        <p>
+                            Example:&nbsp;
+                            <pre className="d-inline">
+                                {protocol + hosts[0] + ':' + port + path}
+                            </pre>
+                        </p>
                     </div>
                 </div>
 

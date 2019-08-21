@@ -6,17 +6,14 @@ class XHRHostScanner extends PureComponent {
         super(props);
 
         this.state = {
-            results: [],
             logs: [],
-            isScanningFinished: false,
+            isScanningFinished: true,
         };
     }
 
     onClick = () => {
-        console.log('clicked');
         this.setState(
             {
-                result: [],
                 logs: [],
                 isScanningFinished: false,
             },
@@ -26,27 +23,16 @@ class XHRHostScanner extends PureComponent {
 
     _handleHostSearch = () => {
         const { hosts, protocol, port, path } = this.props;
-        console.log('hosts', hosts);
 
-        hosts.map((host, i) => {
+        hosts.forEach((host, i) => {
             const url = `${protocol}${host}:${port}${path}`;
             axios
                 .get(url)
-                .then(() => {
-                    const { results } = this.state;
-                    this.setState(
-                        {
-                            results: [...results],
-                        },
-                        this._handleLog(url, 'OK'),
-                    );
-                })
-                .catch(() => {
-                    this._handleLog(url, 'ERR');
-                })
+                .then(() => this._handleLog(url, 'OK'))
+                .catch(() => this._handleLog(url, 'ERR'))
                 .finally(() => {
-                    console.log(i, hosts.length);
-                    if (i >= hosts.length) {
+                    console.log('check is finished', i, hosts.length);
+                    if (i >= hosts.length - 1) {
                         this.setState({
                             isScanningFinished: true,
                         });
@@ -69,7 +55,7 @@ class XHRHostScanner extends PureComponent {
     };
 
     render() {
-        const { results, logs, isScanningFinished } = this.state;
+        const { logs, isScanningFinished } = this.state;
 
         return (
             <>
@@ -84,58 +70,51 @@ class XHRHostScanner extends PureComponent {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-6">
-                        <strong>Results</strong>
-
-                        <ul>
-                            {results.map(({ url }) => (
-                                <li key={url}>{url}</li>
-                            ))}
-                        </ul>
-
-                        {isScanningFinished &&
-                            (results.length === 0 ? (
-                                <div className="alert alert-dark" role="alert">
-                                    Nothing found :(
-                                </div>
+                    <div className="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+                        <p>
+                            <strong>Results</strong>
+                        </p>
+                        {logs.length <= 0 ? (
+                            isScanningFinished ? (
+                                <strong>Start searching</strong>
                             ) : (
-                                <div
-                                    className="alert alert-success"
-                                    role="alert">
-                                    Done, found {results.length} port
-                                    {results.length > 1 && 's'}.
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
                                 </div>
-                            ))}
-                    </div>
-                    <div className="col-12 col-sm-6">
-                        <strong>Logs</strong>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Url</th>
-                                    <th>Result</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {logs.map(({ url, result }) => (
-                                    <tr key={url}>
-                                        <td>
-                                            <pre>{url}</pre>
-                                        </td>
-                                        <td>
-                                            <pre
-                                                className={
-                                                    result === 'OK'
-                                                        ? 'text-success'
-                                                        : 'text-danger'
-                                                }>
-                                                {result}
-                                            </pre>
-                                        </td>
+                            )
+                        ) : isScanningFinished ? (
+                            <table className="table">
+                                <thead className="thead-dark">
+                                    <tr>
+                                        <th>Url</th>
+                                        <th>Result</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {logs.map(({ url, result }) => (
+                                        <tr key={url}>
+                                            <td>
+                                                <pre>{url}</pre>
+                                            </td>
+                                            <td>
+                                                <pre
+                                                    className={
+                                                        result === 'OK'
+                                                            ? 'text-success'
+                                                            : 'text-danger'
+                                                    }>
+                                                    {result}
+                                                </pre>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </>
